@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chat-App</title>
+    <!-- <link rel="stylesheet" href="index.css"> -->
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body>
+    <h1 class="bg-black text-white text-center text-3xl m-2">Chat-Application</h1>
+    <form id="form">
+        <div class="text-center m-3">
+        Name : <input type="name" id="name" class="border-2 border-black text-center"/></div>
+       <div class="text-center mr-5"> Message : <input type="message" id="message" class="border-2 border-black text-center "/></div>
+        <div class="text-center m-5"><button type="submit" class="border-2 border-black bg-blue-400 w-[80px] text-center">Send</button>
+    </form></div>
+    <div class="messages" id="messageArea">
+
+    </div>
+</body>
+<script src="/socket.io/socket.io.js"></script>
+<script>
+    let socket =io();
+    let form = document.getElementById("form");
+    let myname = document.getElementById("name");
+    let message = document.getElementById("message");
+    let messageArea = document.getElementById("messageArea");
+    form.addEventListener("submit", (e)=>{
+        e.preventDefault();
+        if(message.value){
+            socket.emit("send name",myname.value);
+            socket.emit("send message",message.value);
+            message.value="";
+        }
+    });
+
+    socket.on("send name",(username)=>{
+        let name = document.createElement("p");
+        name.style.textAlign="center";
+        name.style.backgroundColor="black";
+        name.style.color="white";
+        name.style.width="40%"
+        name.style.marginLeft="30%"
+        name.textContent=username+" : ";
+        messageArea.appendChild(name);
+    });
+    socket.on("send message",(message)=>{
+        let messages=document.createElement("p");
+        messages.style.textAlign="center";
+        messages.style.backgroundColor="grey";
+        messages.style.margin="5px"
+        messages.style.color="black";
+        messages.style.width="40%"
+        messages.style.marginLeft="30%"
+        messages.textContent=message;
+        messageArea.appendChild(messages)
+    });
+</script>
+</html>
